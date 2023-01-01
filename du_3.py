@@ -1,4 +1,7 @@
 import json
+from pyproj import Transformer
+
+wgs2jtsk=Transformer.from_crs(4326,5514, always_xy=True)
 
 with open ("adresy.geojson", encoding="utf-8") as f: 
     data_a=json.load(f)
@@ -16,7 +19,9 @@ for item in adresy_l:
     cislo=adresa['addr:housenumber']
     poloha_a=item['geometry']
     souradnice_a=poloha_a['coordinates']
-    seznam_a=[ulice, cislo, souradnice_a]
+    jtsk=wgs2jtsk.transform(souradnice_a[0],souradnice_a[1])
+     
+    seznam_a=[ulice, cislo, jtsk]
     adresy_sez[id_a]=seznam_a
     
     
@@ -44,6 +49,6 @@ for item in kontejnery_l:
     else:
         continue
     
-print(kontejnery_sez)
+#print(kontejnery_sez)
 
 
