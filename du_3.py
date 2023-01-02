@@ -35,7 +35,7 @@ for item in kontejnery_l:
 
    
 #print(kontejnery_sez)
-
+slovnik={}
 adresy_sez={}
 min_vzdalenosti=[]
 
@@ -62,24 +62,26 @@ for item in adresy_l:
         vzdalenosti.append (vzdalenost)
     min_vzdalenost=min(vzdalenosti)
     min_vzdalenosti.append (min_vzdalenost)  
-    #prumer_min_vzd=mean(min_vzdalenost)
-    #print ("Pro adresu" ulice, cislo "je minimální vzdálenost ke kontejneru" min_vzdalenost)
-    #print(f"Pro adresu {ulice} {cislo} je minimální vzdálenost ke kontejneru {min_vzdalenost} metrů") 
-
-prum_min_vzdal=mean(min_vzdalenosti)
-print(f"Průměrná minimální vzdálenost je pro danou čtvrť {prum_min_vzdal} metrů")
+    adresa_domu=[ulice,cislo]
 
     
-        
+    slovnik [min_vzdalenost]=[adresa_domu]
+    #prumer_min_vzd=mean(min_vzdalenost)
+    
+    #print(f"Pro adresu {ulice} {cislo} je minimální vzdálenost ke kontejneru {min_vzdalenost} metrů") 
+
+#print (slovnik)
+prum_min_vzdal=mean(min_vzdalenosti)
+max_min_vzdal=max(min_vzdalenosti)
+
+max_adresa_l=(slovnik[max_min_vzdal])
+#max_adresa=''.join(max_adresa_l)
+
+print(f"Průměrná minimální vzdálenost je pro danou čtvrť {prum_min_vzdal} metrů")
+print(f"Nejdále je to k nejbližším kontejnerům tříděného odpadu z adresy {max_adresa_l}, a to {max_min_vzdal} metrů")
 
 
-#print (adresy_sez)
 
-#x1=abs(jtsk_a[0])
-#y1=abs(jtsk_a[1])
-#x2=abs(souradnice_k[0])
-#y2=abs(souradnice_k[1])
-#print(x,y,u,v)
-#vzdalenost=sqrt(((abs(x2-x1))**2)+((abs(y2-y1))**2))
-#print (vzdalenost)
+
+
 
