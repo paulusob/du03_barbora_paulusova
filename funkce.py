@@ -27,5 +27,11 @@ def get_y (souradnice):
     y=abs(souradnice[1])
     return y 
 
+def overeni_jtsk (x,y):
+    if x > 1000000 and x < 40000:
+        print ("Souřadnice x jsou v rozmezí mimo ČR")
+        sys.exit()
+    if y > 1300000 and y < 900000:
+        print ("Souřadnice y jsou v rozmezí mimo ČR")
+        sys.exit()
 
-    

@@ -52,6 +52,8 @@ try:
         x1=get_x (jtsk_a)
         y1=get_y (jtsk_a)
 
+        overeni_jtsk (x1,y1)
+
         # seznam_a=[ulice, cislo, jtsk_a]
         # adresy_sez[id_a]=seznam_a
         vzdalenosti=[]
@@ -68,6 +70,7 @@ try:
                 souradnice_k=poloha_k['coordinates']
                 x2=get_x(souradnice_k)
                 y2=get_y(souradnice_k)
+                overeni_jtsk (x2, y2)
                 vzdalenost=sqrt(((abs(x2-x1))**2)+((abs(y2-y1))**2))
                 vzdalenosti.append (vzdalenost)
             else:
