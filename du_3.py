@@ -1,84 +1,100 @@
-import json
-from pyproj import Transformer
-from math import sqrt
-from statistics import mean
+# Program pro výpočet vzdálenosti ke kontejnerům na tříděný odpad
 
+# import funkcí a potřebných knihoven
+from funkce import *
+
+
+# nastavení převodu souřadnic WGS na JTSK
 wgs2jtsk=Transformer.from_crs(4326,5514, always_xy=True)
 
-with open ("adresy.geojson", encoding="utf-8") as e,\
-    open ("kontejnery.geojson", encoding="utf-8") as d: 
-    data_e=json.load(e)
-    #print (data_e)
-    data_d=json.load(d)
-    #print (data_f)
+# otevření souborů s daty a jejich načtení do proměnných, ošetření nenalezení souboru a přístupových práv
+try:
+    with open ("adresy.geojson", encoding="utf-8") as a,\
+        open ("kontejnery.geojson", encoding="utf-8") as k: 
+        
+        # ověření, zda některý ze souborů není prázdný 
+        overeni_obsahu ("adresy.geojson")
+        overeni_obsahu ("kontejnery.geojson")
 
-adresy=data_e['features']
-adresy_l=list(adresy)
-
-kontejnery=data_d['features']
-kontejnery_l=list(kontejnery)
-
-kontejnery_sez={}
-
-for item in kontejnery_l:
+        data_adresy=json.load(a)
+        data_kontejnery=json.load(k)
+        
+except FileNotFoundError:
+    print ('Vstupní soubor nebyl nalezen, zkontrolujte název a umístění souboru')
+    sys.exit()
+except PermissionError:
+    print ('K otevření souboru nejsou přístupová práva')
+    sys.exit()
     
-    poloha_k=item['geometry']
-    souradnice_k=poloha_k['coordinates']
-    vlastnosti=item ['properties']
-    id_k=vlastnosti['ID']
-    pristup=vlastnosti['PRISTUP']
-    seznam_k=[souradnice_k, pristup]
-    if "volně" in pristup:
-        kontejnery_sez[id_k]=souradnice_k
-    else:
-        continue
+# načtení dat do listů, ošetření neočekávaného formátu 
+try: 
+    adresy=list(data_adresy['features'])
+    kontejnery=list(data_kontejnery['features'])
 
-   
-#print(kontejnery_sez)
-slovnik={}
-adresy_sez={}
-min_vzdalenosti=[]
+    # vytvoření slovníků pro vyhledávání 
+    adresy_s_min_vzdal={}
+    min_vzdalenosti=[]
 
-for item in adresy_l:
-    adresa=item ['properties']
-    id_a=adresa['@id']
-    ulice=adresa['addr:street']
-    cislo=adresa['addr:housenumber']
-    poloha_a=item['geometry']
-    souradnice_a=poloha_a['coordinates']
-    jtsk_a=[]
-    jtsk_a=wgs2jtsk.transform(souradnice_a[0],souradnice_a[1])
-    x1=abs(jtsk_a[0])
-    y1=abs(jtsk_a[1])
-    seznam_a=[ulice, cislo, jtsk_a]
-    adresy_sez[id_a]=seznam_a
-    vzdalenosti=[]
-    for item in kontejnery_l:
-        poloha_k=item['geometry']
-        souradnice_k=poloha_k['coordinates']
-        x2=abs(souradnice_k[0])
-        y2=abs(souradnice_k[1])
-        vzdalenost=sqrt(((abs(x2-x1))**2)+((abs(y2-y1))**2))
-        vzdalenosti.append (vzdalenost)
-    min_vzdalenost=min(vzdalenosti)
-    min_vzdalenosti.append (min_vzdalenost)  
-    adresa_domu=[ulice,cislo]
+    print ("Probíhá výpočet")
 
-    
-    slovnik [min_vzdalenost]=[adresa_domu]
-    #prumer_min_vzd=mean(min_vzdalenost)
-    
-    #print(f"Pro adresu {ulice} {cislo} je minimální vzdálenost ke kontejneru {min_vzdalenost} metrů") 
+    # načtení každého adresního bodu a jeho vlastností
+    for item in adresy:
+        adresa=item ['properties']
+        id_a=adresa['@id']
+        ulice=adresa['addr:street']
+        cislo=adresa['addr:housenumber']
+        poloha_a=item['geometry']
+        souradnice_a=poloha_a['coordinates']
+        
+        # převedení souřadnic z WGS do JTSK 
+        jtsk_a=wgs_to_jtsk(souradnice_a)
+        
+        x1=get_x (jtsk_a)
+        y1=get_y (jtsk_a)
 
-#print (slovnik)
-prum_min_vzdal=mean(min_vzdalenosti)
+        # seznam_a=[ulice, cislo, jtsk_a]
+        # adresy_sez[id_a]=seznam_a
+        vzdalenosti=[]
+
+        # výpočet vzdálenosti adresního bodu ke všem kontejnerům
+        for item in kontejnery:
+            vlastnosti=item ['properties']
+            id_k=vlastnosti['ID']
+            pristup=vlastnosti['PRISTUP']
+
+            # ošetření volného přístupu kontejnerů 
+            if "volně" in pristup:
+                poloha_k=item['geometry']
+                souradnice_k=poloha_k['coordinates']
+                x2=get_x(souradnice_k)
+                y2=get_y(souradnice_k)
+                vzdalenost=sqrt(((abs(x2-x1))**2)+((abs(y2-y1))**2))
+                vzdalenosti.append (vzdalenost)
+            else:
+                continue
+
+        # vyhledání nejmenší vzdálenosti ke kontejneru
+        min_vzdalenost=min(vzdalenosti)
+        min_vzdalenosti.append (min_vzdalenost)  
+        adresa_domu=[ulice,cislo]
+
+        # přiřazení adresního bodu a nejmenší vzdálenosti do slovníku
+        adresy_s_min_vzdal[min_vzdalenost]=[adresa_domu]
+        
+except KeyError:
+    print ('Vstupní soubory neobsahují předpokládaná data nebo nejsou v požadovaném formátu, zkontrolujte soubory')
+    sys.exit()
+
+
+prum_min_vzdal="{:.1f}".format(mean(min_vzdalenosti))
 max_min_vzdal=max(min_vzdalenosti)
 
-max_adresa_l=(slovnik[max_min_vzdal])
+max_adresa_l=(adresy_s_min_vzdal[max_min_vzdal])
 #max_adresa=''.join(max_adresa_l)
+max_min_vzdal="{:.1f}".format(max_min_vzdal) 
 
 print(f"Průměrná minimální vzdálenost je pro danou čtvrť {prum_min_vzdal} metrů")
-print(f"Nejdále je to k nejbližším kontejnerům tříděného odpadu z adresy {max_adresa_l}, a to {max_min_vzdal} metrů")
+print(f"Nejdále je to k nejbližším kontejnerům tříděného odpadu z adresy {str(' '.join(max_adresa_l[0]))}, a to {max_min_vzdal} metrů")
 
 
 
