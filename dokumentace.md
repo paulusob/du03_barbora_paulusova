@@ -29,7 +29,7 @@ definována v souboru funkce, přičemž je využíván model *PyProj*. Rovněž
 Následně je počítána vzdálenost kontejnerů od adresních bodů. Ze souboru jsou nejdřív vyextrahovány 
 požadované vlastnosti jako *ID* a *přístup*. Pokud je přístup ke kontejnerům volný, získávají se pro daný
 objekt souřadnice, které se také ověřují pomocí funkce *overeni_jtsk*. Pomocí pythagorovy věty je potom
-počítána vzdálenost souřadnic adresního bodu a každého kontejneru s volným přístupem. Vzdálenost je uložena do seznamu *vzdalenost*. 
+počítána vzdálenost souřadnic adresního bodu a každého kontejneru s volným přístupem. Kontejnery přístupné pouze obyvatelům domu nejsou uvažovány. Vzdálenost je uložena do seznamu *vzdalenost*. 
 
 Když jsou takto analyzovány všechny kontejnery, ze seznamu *vzdalenost* se vybere ten s nejnižší hodnotou.
 Nejmenší vzdálenost se uloží do seznamu *min_vzdalenosti* a rovněž je s adresou přiřazen do slovníku 
