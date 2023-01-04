@@ -85,11 +85,11 @@ except KeyError:
     sys.exit()
 
 
-prum_min_vzdal="{:.1f}".format(mean(min_vzdalenosti))
+prum_min_vzdal="{:.0f}".format(mean(min_vzdalenosti))
 max_min_vzdal=max(min_vzdalenosti)
 
 max_adresa_l=(adresy_s_min_vzdal[max_min_vzdal])
-max_min_vzdal="{:.1f}".format(max_min_vzdal) 
+max_min_vzdal="{:.0f}".format(max_min_vzdal) 
 
 print(f"Průměrná minimální vzdálenost je pro danou čtvrť {prum_min_vzdal} metrů")
 print(f"Nejdále je to k nejbližším kontejnerům tříděného odpadu z adresy {str(' '.join(max_adresa_l[0]))}, a to {max_min_vzdal} metrů")
