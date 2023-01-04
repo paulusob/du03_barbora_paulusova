@@ -4,9 +4,6 @@
 from funkce import *
 
 
-# nastavení převodu souřadnic WGS na JTSK
-wgs2jtsk=Transformer.from_crs(4326,5514, always_xy=True)
-
 # otevření souborů s daty a jejich načtení do proměnných, ošetření nenalezení souboru a přístupových práv
 try:
     with open ("adresy.geojson", encoding="utf-8") as a,\
@@ -16,6 +13,7 @@ try:
         overeni_obsahu ("adresy.geojson")
         overeni_obsahu ("kontejnery.geojson")
 
+        # přepsání dat
         data_adresy=json.load(a)
         data_kontejnery=json.load(k)
         
@@ -54,8 +52,6 @@ try:
 
         overeni_jtsk (x1,y1)
 
-        # seznam_a=[ulice, cislo, jtsk_a]
-        # adresy_sez[id_a]=seznam_a
         vzdalenosti=[]
 
         # výpočet vzdálenosti adresního bodu ke všem kontejnerům
@@ -93,7 +89,6 @@ prum_min_vzdal="{:.1f}".format(mean(min_vzdalenosti))
 max_min_vzdal=max(min_vzdalenosti)
 
 max_adresa_l=(adresy_s_min_vzdal[max_min_vzdal])
-#max_adresa=''.join(max_adresa_l)
 max_min_vzdal="{:.1f}".format(max_min_vzdal) 
 
 print(f"Průměrná minimální vzdálenost je pro danou čtvrť {prum_min_vzdal} metrů")
