@@ -73,9 +73,16 @@ try:
                 continue
 
         # vyhledání nejmenší vzdálenosti ke kontejneru
-        min_vzdalenost=min(vzdalenosti)
-        min_vzdalenosti.append (min_vzdalenost)  
         adresa_domu=[ulice,cislo]
+        min_vzdalenost=min(vzdalenosti)
+
+        # ověření, že nejbližší kontejner není dále než 10 km
+        if min_vzdalenost > 10000:
+            print (f"Chyba, pro adresu {str(' '.join(adresa_domu))} je nejbližší kontejner dál než 10 km, zkontrolujte vstupní soubory")
+            sys.exit()
+        
+        min_vzdalenosti.append (min_vzdalenost)  
+        
 
         # přiřazení adresního bodu a nejmenší vzdálenosti do slovníku
         adresy_s_min_vzdal[min_vzdalenost]=[adresa_domu]
@@ -88,10 +95,11 @@ except KeyError:
 prum_min_vzdal="{:.0f}".format(mean(min_vzdalenosti))
 max_min_vzdal=max(min_vzdalenosti)
 
+
 max_adresa_l=(adresy_s_min_vzdal[max_min_vzdal])
 max_min_vzdal="{:.0f}".format(max_min_vzdal) 
 
-print(f"Průměrná minimální vzdálenost je pro danou čtvrť {prum_min_vzdal} metrů")
+print(f"Průměrná minimální vzdálenost ke kontejneru na tříděný odpad je pro danou čtvrť {prum_min_vzdal} metrů")
 print(f"Nejdále je to k nejbližším kontejnerům tříděného odpadu z adresy {str(' '.join(max_adresa_l[0]))}, a to {max_min_vzdal} metrů")
 
 
