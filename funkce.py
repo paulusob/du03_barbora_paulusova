@@ -1,11 +1,18 @@
+
 import sys 
 import os
-import json
 from pyproj import Transformer
-from math import sqrt
-from statistics import mean
+import json
 
-wgs2jtsk=Transformer.from_crs(4326,5514, always_xy=True)
+def valid_nact_json (vstupni_soubor, parametr):
+    try:
+        data=json.load (parametr)
+        return data
+    except ValueError:
+        print (f"Soubor {vstupni_soubor} není validní json")
+        sys.exit()
+
+
 
 def overeni_obsahu (vstupni_soubor):
     if os.stat(vstupni_soubor).st_size==0:
@@ -13,6 +20,7 @@ def overeni_obsahu (vstupni_soubor):
         sys.exit()
 
 def wgs_to_jtsk (souradnice):
+    wgs2jtsk=Transformer.from_crs(4326,5514, always_xy=True)
     jtsk=wgs2jtsk.transform(souradnice[0],souradnice[1])
     return jtsk
 

@@ -1,8 +1,11 @@
 # Program pro výpočet vzdálenosti ke kontejnerům na tříděný odpad
 
 # import funkcí a potřebných knihoven
-from funkce import *
-
+from funkce import overeni_obsahu, wgs_to_jtsk, get_x, get_y, overeni_jtsk, valid_nact_json
+import json
+from math import sqrt
+from statistics import mean
+import sys 
 
 # otevření souborů s daty a jejich načtení do proměnných, ošetření nenalezení souboru a přístupových práv
 try:
@@ -12,10 +15,13 @@ try:
         # ověření, zda některý ze souborů není prázdný 
         overeni_obsahu ("adresy.geojson")
         overeni_obsahu ("kontejnery.geojson")
-
+        
+        print ("Vstupní soubory byly načteny")
         # přepsání dat
-        data_adresy=json.load(a)
-        data_kontejnery=json.load(k)
+        data_adresy = valid_nact_json ("adresy.geojson", a)
+        data_kontejnery = valid_nact_json ("kontejnery.geojson", k)
+        
+        
         
 except FileNotFoundError:
     print ('Vstupní soubor nebyl nalezen, zkontrolujte název a umístění souboru')
