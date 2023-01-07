@@ -10,19 +10,13 @@ Jednotlivé funkce budou popsány níže.
 ## Vstupní soubory
 Vstupním souborem je soubor adresních bodů vybrané pražské čtvrti uložený jako *adresy.geojson* a soubor obsahující polohu a vlastnosti kontejnerů na tříděný odpad v Praze uložený jako *kontejnery.geojson*
 
-
-(dostupný z https://overpass-turbo.eu/)
-uložený jako *adresy.geojson* a soubor obsahující polohu a vlastnosti kontejnerů na tříděný odpad v Praze 
-(dostupný z https://www.geoportalpraha.cz/cs/data/otevrena-data/8726EF0E-0834-463B-9E5F-FE09E62D73FB) 
-uložený jako *kontejnery.geojson*. Oba soubory musí být ve formátu geojson. 
-Program předpokládá, že soubor adresních bodů je v souřadnicovém systému WGS-84, zatímco soubor 
-se souřadnicemi kontejnerů je v JTSK.
 ### adresy.geojson
-Soubor adresních bodů pro libovolnou pražskou čtvrť lze stáhnout z https://overpass-turbo.eu/ v souřadnicovém systému WGS-84.
+Soubor adresních bodů pro libovolnou pražskou čtvrť lze stáhnout z [Overpass Turbo] (https://overpass-turbo.eu/) v souřadnicovém systému WGS-84.
+Soubor musí být ve formátu *json* a pod atributem *features* musí být uloženy jednotlivé adresy, přičemž pod atributem *properties* musí být uloženy dílčí atributy *@id* , *addr:housenumber* a *addr:street*. Atribut *geometry* musí obsahovat *coordinates*, kde jsou uloženy souřadnice dané adresy. 
 
 ### kontejnery.geojson
-Soubor s polohou kontejnerů v Praze lze stáhnout ze [stránek](https://www.geoportalpraha.cz/cs/data/otevrena-data/8726EF0E-0834-463B-9E5F-FE09E62D73FB)
-
+Soubor s polohou kontejnerů v Praze lze stáhnout z [pražského Geoportálu ](https://www.geoportalpraha.cz/cs/data/otevrena-data/8726EF0E-0834-463B-9E5F-FE09E62D73FB) v souřadnicovém systému JTSK. 
+Soubor musí být ve formátu *json* a pod atributem *features* musí být uloženy jednotlivé kontejnery. Pod atributem *properties* musí být uloženo *ID* a atribut *geometry* musí obsahovat *coordinates*, kde jsou uloženy souřadnice daného kontejneru. 
 
 ## Zdrojový kód
 Ve zdrojovém kódu je nejprve proveden import celého souboru *funkce*, který obsahuje definované funkce a 
