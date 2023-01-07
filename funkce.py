@@ -8,14 +8,11 @@ from statistics import mean
 wgs2jtsk=Transformer.from_crs(4326,5514, always_xy=True)
 
 def overeni_obsahu (vstupni_soubor):
-    if os.stat(vstupni_soubor).st_size>0:
-        print (f"Soubor {vstupni_soubor} načten")
-    else:
+    if os.stat(vstupni_soubor).st_size==0:
         print (f"Vstupní soubor {vstupni_soubor} je prázdný")
         sys.exit()
 
 def wgs_to_jtsk (souradnice):
-    jtsk=[]
     jtsk=wgs2jtsk.transform(souradnice[0],souradnice[1])
     return jtsk
 
