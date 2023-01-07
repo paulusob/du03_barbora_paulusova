@@ -7,23 +7,26 @@ ke kontejnerům na tříděný odpad ve vybrané pražské čtvrti.
 Všechny funkce a importované knihovny jsou zapsány v samostatném souboru *funkce.py*. 
 Jednotlivé funkce budou popsány níže.
 
-## Vstup
-Vstupním souborem je soubor adresních bodů vybrané pražské čtvrti (dostupný z https://overpass-turbo.eu/)
-uložený jako *adresy.geojson* a soubor obsahující polohu a vlastnosti kontejnerů na tříděný odpad v Praze 
-(dostupný z https://www.geoportalpraha.cz/cs/data/otevrena-data/8726EF0E-0834-463B-9E5F-FE09E62D73FB) 
-uložený jako *kontejnery.geojson*. Oba soubory musí být ve formátu geojson. 
-Program předpokládá, že soubor adresních bodů je v souřadnicovém systému WGS-84, zatímco soubor 
-se souřadnicemi kontejnerů je v JTSK.
+## Vstupní soubory
+Vstupním souborem je soubor adresních bodů vybrané pražské čtvrti uložený jako *adresy.geojson* a soubor obsahující polohu a vlastnosti kontejnerů na tříděný odpad v Praze uložený jako *kontejnery.geojson*.
+
+### adresy.geojson
+Soubor adresních bodů pro libovolnou pražskou čtvrť lze stáhnout z [Overpass Turbo](https://overpass-turbo.eu/) v souřadnicovém systému WGS-84.
+Soubor musí být ve formátu *json* a pod atributem *features* musí být uloženy jednotlivé adresy, přičemž pod atributem *properties* musí být uloženy dílčí atributy *@id* , *addr:housenumber* a *addr:street*, ze kterých je následně vytvořena adresa domu. Atribut *geometry* musí obsahovat *coordinates*, kde jsou uloženy souřadnice dané adresy. 
+
+### kontejnery.geojson
+Soubor s polohou kontejnerů v Praze lze stáhnout z [pražského Geoportálu](https://www.geoportalpraha.cz/cs/data/otevrena-data/8726EF0E-0834-463B-9E5F-FE09E62D73FB) v souřadnicovém systému JTSK. 
+Soubor musí být ve formátu *json* a pod atributem *features* musí být uloženy jednotlivé kontejnery. Pod atributem *properties* musí být uloženo *ID*, které odlišuje jednotlivé kontejnery a atribut *geometry* musí obsahovat *coordinates*, kde jsou uloženy souřadnice daného kontejneru. 
 
 ## Zdrojový kód
 Ve zdrojovém kódu je nejprve proveden import celého souboru *funkce*, který obsahuje definované funkce a 
 importy dalších knihoven. Následně jsou otevřeny oba vstupní soubory a pomocí funkce *overeni_obsahu* 
-je kontrolováno, zda nejsou soubory prázdné. Současně je pomocí bloku *try a except* ovšetřeno nenalezení 
+je kontrolováno, zda nejsou soubory prázdné. Současně je ovšetřeno nenalezení 
 souboru a přístupových práv k otevření souboru. Jednotlivé vstupní soubory jsou přepsány do proměnných 
 *data_adresy* a *data_kontejnery*. 
 
 Následně jsou vytvořeny listy, které obsahují již samotné údaje o adresních bodech *(adresy)* a kontejnerech *(kontejnery)*. 
-Ve *for cyklu* je načítána poloha každého adresního bodu a jeho vlastnosti jsou extrahovány 
+Postupně je načítána poloha každého adresního bodu a jeho vlastnosti jsou extrahovány 
 do jednotlivých proměnných. Souřadnice adresního bodu jsou převedeny pomocí funkce *wgs_to_jtsk*, která je 
 definována v souboru funkce, přičemž je využíván model *PyProj*. Rovněž je pro získané souřadnice JTSK pomocí funkce *overeni_jtsk* ověřováno, zda leží na území ČR, tedy v oblasti, kde je souřadnicový systém definován. 
 Následně je počítána vzdálenost kontejnerů od adresních bodů. Ze souboru jsou nejdřív vyextrahovány 
