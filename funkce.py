@@ -12,7 +12,15 @@ def valid_nact_json (vstupni_soubor, parametr):
         print (f"Soubor {vstupni_soubor} není validní json")
         sys.exit()
 
-
+def overeni_exist_pristup (vstupni_soubor):
+    try:
+        open (vstupni_soubor, encoding="utf-8")
+    except FileNotFoundError:
+        print (f'Vstupní soubor {vstupni_soubor} nebyl nalezen, zkontrolujte název a umístění souboru')
+        sys.exit()
+    except PermissionError:
+        print (f'K otevření souboru {vstupni_soubor} nejsou přístupová práva')
+        sys.exit()
 
 def overeni_obsahu (vstupni_soubor):
     if os.stat(vstupni_soubor).st_size==0:

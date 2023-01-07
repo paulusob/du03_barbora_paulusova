@@ -1,34 +1,30 @@
 # Program pro výpočet vzdálenosti ke kontejnerům na tříděný odpad
 
 # import funkcí a potřebných knihoven
-from funkce import overeni_obsahu, wgs_to_jtsk, get_x, get_y, overeni_jtsk, valid_nact_json
+from funkce import overeni_obsahu, wgs_to_jtsk, get_x, get_y, overeni_jtsk, valid_nact_json, overeni_exist_pristup
 import json
 from math import sqrt
 from statistics import mean
 import sys 
 
 # otevření souborů s daty a jejich načtení do proměnných, ošetření nenalezení souboru a přístupových práv
-try:
-    with open ("adresy.geojson", encoding="utf-8") as a,\
-        open ("kontejnery.geojson", encoding="utf-8") as k: 
+
+overeni_exist_pristup ("adresy.geojson")
+overeni_exist_pristup ("kontejnery.geojson")
+
+
+with open ("adresy.geojson", encoding="utf-8") as a,\
+    open ("kontejnery.geojson", encoding="utf-8") as k: 
         
-        # ověření, zda některý ze souborů není prázdný 
-        overeni_obsahu ("adresy.geojson")
-        overeni_obsahu ("kontejnery.geojson")
+    # ověření, zda některý ze souborů není prázdný 
+    overeni_obsahu ("adresy.geojson")
+    overeni_obsahu ("kontejnery.geojson")
         
-        print ("Vstupní soubory byly načteny")
-        # přepsání dat
-        data_adresy = valid_nact_json ("adresy.geojson", a)
-        data_kontejnery = valid_nact_json ("kontejnery.geojson", k)
+    print ("Vstupní soubory byly načteny")
+    # přepsání dat
+    data_adresy = valid_nact_json ("adresy.geojson", a)
+    data_kontejnery = valid_nact_json ("kontejnery.geojson", k)
         
-        
-        
-except FileNotFoundError:
-    print ('Vstupní soubor nebyl nalezen, zkontrolujte název a umístění souboru')
-    sys.exit()
-except PermissionError:
-    print ('K otevření souboru nejsou přístupová práva')
-    sys.exit()
     
 # načtení dat do listů, ošetření neočekávaného formátu 
 try: 
@@ -73,7 +69,7 @@ try:
                 x2=get_x(souradnice_k)
                 y2=get_y(souradnice_k)
                 overeni_jtsk (x2, y2)
-                vzdalenost=sqrt(((abs(x2-x1))**2)+((abs(y2-y1))**2))
+                vzdalenost=sqrt((((x2-x1))**2)+(((y2-y1))**2))
                 vzdalenosti.append (vzdalenost)
             else:
                 continue
