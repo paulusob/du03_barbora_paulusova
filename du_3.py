@@ -31,9 +31,11 @@ try:
     adresy=list(data_adresy['features'])
     kontejnery=list(data_kontejnery['features'])
 
-    # vytvoření slovníků pro vyhledávání 
+    # vytvoření slovníků pro vyhledávání a proměnných pro přiřazení maximální vzdálenosti a kumulativní vzdálenosti, ze které se bude nakonec počítat průměrná vzdálenost
     adresy_s_min_vzdal={}
     min_vzdalenosti=[]
+    max_vzdalenost=-9999.0
+    kumul_vzdalenost=0
 
     print ("Probíhá výpočet")
 
@@ -55,6 +57,8 @@ try:
         overeni_jtsk (x1,y1)
 
         vzdalenosti=[]
+        min_vzdalenost=9999.0
+        
 
         # výpočet vzdálenosti adresního bodu ke všem kontejnerům
         for item in kontejnery:
@@ -70,21 +74,27 @@ try:
                 y2=get_y(souradnice_k)
                 overeni_jtsk (x2, y2)
                 vzdalenost=sqrt((((x2-x1))**2)+(((y2-y1))**2))
-                vzdalenosti.append (vzdalenost)
+                if vzdalenost < min_vzdalenost:
+                    min_vzdalenost=vzdalenost
             else:
                 continue
 
         # vyhledání nejmenší vzdálenosti ke kontejneru
         adresa_domu=[ulice,cislo]
-        min_vzdalenost=min(vzdalenosti)
+        
 
         # ověření, že nejbližší kontejner není dále než 10 km
         if min_vzdalenost > 10000:
             print (f"Chyba, pro adresu {str(' '.join(adresa_domu))} je nejbližší kontejner dál než 10 km, zkontrolujte vstupní soubory")
             sys.exit()
         
-        min_vzdalenosti.append (min_vzdalenost)  
+         
+        # případné nové určení minimální vzdálenosti
+        if min_vzdalenost>max_vzdalenost:
+            max_vzdalenost=min_vzdalenost
         
+        # přičtení minimální vzdálenosti do kumulativní vzdálenosti, ze které bude počítána průměrná minimální vzdálenost
+        kumul_vzdalenost+=min_vzdalenost
 
         # přiřazení adresního bodu a nejmenší vzdálenosti do slovníku
         adresy_s_min_vzdal[min_vzdalenost]=[adresa_domu]
@@ -94,15 +104,15 @@ except KeyError:
     sys.exit()
 
 
-prum_min_vzdal="{:.0f}".format(mean(min_vzdalenosti))
-max_min_vzdal=max(min_vzdalenosti)
+# výpočet průměrné minimální vzdálenosti vypočítaný z kumulativní minimální vzdálenosti vyděleným počtem adresních bodů
+prum_min_vzdal="{:.0f}".format(kumul_vzdalenost/len(adresy))
 
-
-max_adresa_l=(adresy_s_min_vzdal[max_min_vzdal])
-max_min_vzdal="{:.0f}".format(max_min_vzdal) 
+# vyhledání příslušné adresy s maximální vzdáleností ke kontejneru
+max_adresa_l=(adresy_s_min_vzdal[max_vzdalenost])
+max_vzdalenost="{:.0f}".format(max_vzdalenost) 
 
 print(f"Průměrná minimální vzdálenost ke kontejneru na tříděný odpad je pro danou čtvrť {prum_min_vzdal} metrů")
-print(f"Nejdále je to k nejbližším kontejnerům tříděného odpadu z adresy {str(' '.join(max_adresa_l[0]))}, a to {max_min_vzdal} metrů")
+print(f"Nejdále je to k nejbližším kontejnerům tříděného odpadu z adresy {str(' '.join(max_adresa_l[0]))}, a to {max_vzdalenost} metrů")
 
 
 
