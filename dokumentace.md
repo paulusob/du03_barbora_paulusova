@@ -32,14 +32,13 @@ definována v souboru funkce, přičemž je využíván model *PyProj*. Rovněž
 Následně je počítána vzdálenost kontejnerů od adresních bodů. Ze souboru jsou nejdřív vyextrahovány 
 požadované vlastnosti jako *ID* a *přístup*. Pokud je přístup ke kontejnerům volný, získávají se pro daný
 objekt souřadnice, které se také ověřují pomocí funkce *overeni_jtsk*. Pomocí pythagorovy věty je potom
-počítána vzdálenost souřadnic adresního bodu a každého kontejneru s volným přístupem. Kontejnery přístupné pouze obyvatelům domu nejsou uvažovány. Vzdálenost je uložena do seznamu *vzdalenost*. 
+počítána vzdálenost souřadnic adresního bodu a každého kontejneru s volným přístupem. Kontejnery přístupné pouze obyvatelům domu nejsou uvažovány. Při každém opakování se ukládá nejmenší hodnota v porovnání s předchozími vzdálenostmi.  
 
-Když jsou takto analyzovány všechny kontejnery, ze seznamu *vzdalenost* se vybere ten s nejnižší hodnotou.
-Nejmenší vzdálenost se uloží do seznamu *min_vzdalenosti* a rovněž je s adresou přiřazen do slovníku 
-*adresy_s_min_vzdalenosti*. V celém tomto bloku je ošetřeno, že vstupní soubory obsahují předpokládané klíče.
+Když jsou takto analyzovány všechny kontejnery, nejmenší vzdálenost se pro danou adresu uloží do slovníku 
+*adresy_s_min_vzdalenosti* a také se přičte ke kumulativní vzdálenosti. Pokud je minimání vzdálenost vyšší než předchozí hodnota, nahrazuje hodnotu v proměnné max_vzdalenost. Taktéž je ošetřeno, že vstupní soubory obsahují předpokládané klíče. 
 
-Ze všech minimálních vzdáleností je vypočítán průměr, který je vypsán do *terminalu*. 
-Rovněž je vyhledána nejvyšší hodnota, podle které je pak ze slovníku *adresy_s_min_vzdal* vyhledána i příslušná adresa s touto hodnotou. Tento výstup je taktéž vypsán do terminalu. 
+Ze všech minimálních vzdáleností je vydělením kumulativní vzdálenosti počtem adres vypočítán průměr, který je vypsán do *terminalu*. 
+Podle nejvyšší hodnoty je pak ze slovníku *adresy_s_min_vzdal* vyhledána i příslušná adresa s touto hodnotou. Tento výstup je taktéž vypsán do terminalu. 
 
 
 
